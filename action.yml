@@ -1,7 +1,7 @@
 name: Detect and Tag New Version
 description: >
-  Tag new versions in your repository based on changes to their contents, such
-  as the version specified in a `package.json` or `gemspec`.
+  Tag new versions in your repository based on changes to its contents,
+  like a `package.json` or `.gemspec` file.
 author: dfreeman
 inputs:
   version-command:
