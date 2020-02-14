@@ -1,18 +1,32 @@
-name: Tag New Version
+name: Detect and Tag New Version
 description: >
   Tag new versions in your repository based on changes to their contents, such
   as the version specified in a `package.json` or `gemspec`.
-author: Dan Freeman
+author: dfreeman
 inputs:
   version-command:
     description: >
       A shell command whose output when executed will be considered the version
       of your repository for the commit at which it's currently checked out.
+  create-tag:
+    description: >
+      Whether or not a tag should be created if a new version is detected.
+    default: false
   tag-template:
     description: >
       A template for producing a tag name from the current version of your
       repository, replacing '{VERSION}' with the deteced version.
     default: 'v{VERSION}'
+outputs:
+  previous-version:
+    description: the detected previous version of this repository
+  current-version:
+    description: the detected current version of this repository
+  tag:
+    description: if a new tag is created, this output will contain its name
 runs:
   using: 'node12'
   main: 'dist/index.js'
+branding:
+  icon: tag
+  color: purple
