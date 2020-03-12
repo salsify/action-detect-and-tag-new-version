@@ -11,7 +11,7 @@ inputs:
   create-tag:
     description: >
       Whether or not a tag should be created if a new version is detected.
-    default: false
+    default: true
   tag-template:
     description: >
       A template for producing a tag name from the current version of your
