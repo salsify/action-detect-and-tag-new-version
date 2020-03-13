@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - uses: dfreeman/action-detect-and-tag-new-version@v1
+      - uses: salsify/action-detect-and-tag-new-version@v1
         with:
           version-command: |
             cat current-version.txt
