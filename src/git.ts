@@ -25,7 +25,12 @@ export async function checkout(ref: string): Promise<void> {
   await execa('git', ['checkout', ref]);
 }
 
-export async function createTag(name: string): Promise<void> {
-  await execa('git', ['tag', name]);
+export async function createTag(name: string, annotation: string): Promise<void> {
+  let tagArgs = ['tag', name];
+  if (annotation.length) {
+    tagArgs.push('-m', annotation);
+  }
+
+  await execa('git', tagArgs);
   await execa('git', ['push', '--tags']);
 }

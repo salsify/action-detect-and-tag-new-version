@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - uses: dfreeman/action-detect-and-tag-new-version@v1
+      - uses: salsify/action-detect-and-tag-new-version@v2
         with:
           version-command: |
             cat current-version.txt
@@ -35,6 +35,10 @@ All inputs are optional.
  - `create-tag`: may be set to `false` to only detect version changes and not create a new tag when the version changes.
  - `tag-template`: a template for producing a tag name from the current version of your repository. Any instance of
    `{VERSION}` in the string will be replaced with the actual detected version. Defaults to `v{VERSION}`.
+ - `tag-annotation-template`: a template for producing a tag annotation from the current version of your repository. As
+   with `tag-template`, any instance of `{VERSION}` in the string will be replaced with the actual detected version.
+   May be set to an empty string to produce a lightweight (i.e. annotation-less) tag. Defaults to
+   `Released version {VERSION}`.
 
 ### Outputs
 

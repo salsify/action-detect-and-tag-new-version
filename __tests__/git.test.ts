@@ -46,12 +46,12 @@ describe('createTag', () => {
     await initRepository('upstream');
     await addAndTrackRemote('foo', 'upstream/.git');
 
-    await git.createTag('foo-bar');
+    await git.createTag('foo-bar', 'Here is my commit annotation.');
 
-    let localTag = await execa('git', ['tag']);
-    expect(localTag.stdout.trim()).toBe('foo-bar');
+    let localTag = await execa('git', ['tag', '-n1']);
+    expect(localTag.stdout.trim()).toMatch(/^foo-bar\s+Here is my commit annotation.$/);
 
-    let remoteTag = await execa('git', ['tag'], { cwd: 'upstream' });
-    expect(remoteTag.stdout.trim()).toBe('foo-bar');
+    let remoteTag = await execa('git', ['tag', '-n1'], { cwd: 'upstream' });
+    expect(remoteTag.stdout.trim()).toMatch(/^foo-bar\s+Here is my commit annotation.$/);
   });
 });
