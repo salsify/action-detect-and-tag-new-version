@@ -3,6 +3,8 @@ import { determineVersion } from './determine-version';
 import { validateHistoryDepth, checkout, createTag, refExists } from './git';
 import { getEnv } from './utils';
 
+const VERSION_PLACEHOLDER = /{VERSION}/g;
+
 async function run(): Promise<void> {
   await validateHistoryDepth();
   await checkout('HEAD~1');
@@ -21,7 +23,10 @@ async function run(): Promise<void> {
 
   if (currentVersion !== previousVersion && getInput('create-tag') !== 'false') {
     let tagTemplate = getInput('tag-template') || 'v{VERSION}';
-    let tag = tagTemplate.replace(/{VERSION}/g, currentVersion);
+    let tag = tagTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
+
+    let annotationTemplate = getInput('tag-annotation-template') || 'Released version {VERSION}';
+    let annotation = annotationTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
 
     if (await refExists(tag)) {
       info(`Tag ${tag} already exists`);
@@ -29,7 +34,7 @@ async function run(): Promise<void> {
       info(`Creating tag ${tag}`);
       setOutput('tag', tag);
 
-      await createTag(tag);
+      await createTag(tag, annotation);
     }
   }
 }
