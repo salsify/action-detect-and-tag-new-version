@@ -34,6 +34,7 @@ async function run(): Promise<void> {
       info(`Creating tag ${tag}`);
       setOutput('tag', tag);
 
+      await ensureGitEnvironment();
       await createTag(tag, annotation);
     }
   }
