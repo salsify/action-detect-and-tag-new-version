@@ -1780,8 +1780,12 @@ async function checkout(ref) {
     await execa_1.default('git', ['checkout', ref]);
 }
 exports.checkout = checkout;
-async function createTag(name) {
-    await execa_1.default('git', ['tag', name]);
+async function createTag(name, annotation) {
+    let tagArgs = ['tag', name];
+    if (annotation.length) {
+        tagArgs.push('-m', annotation);
+    }
+    await execa_1.default('git', tagArgs);
     await execa_1.default('git', ['push', '--tags']);
 }
 exports.createTag = createTag;
@@ -1973,6 +1977,7 @@ const core_1 = __webpack_require__(470);
 const determine_version_1 = __webpack_require__(527);
 const git_1 = __webpack_require__(136);
 const utils_1 = __webpack_require__(611);
+const VERSION_PLACEHOLDER = /{VERSION}/g;
 async function run() {
     await git_1.validateHistoryDepth();
     await git_1.checkout('HEAD~1');
@@ -1985,14 +1990,16 @@ async function run() {
     core_1.setOutput('current-version', currentVersion);
     if (currentVersion !== previousVersion && core_1.getInput('create-tag') !== 'false') {
         let tagTemplate = core_1.getInput('tag-template') || 'v{VERSION}';
-        let tag = tagTemplate.replace(/{VERSION}/g, currentVersion);
+        let tag = tagTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
+        let annotationTemplate = core_1.getInput('tag-annotation-template') || 'Released version {VERSION}';
+        let annotation = annotationTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
         if (await git_1.refExists(tag)) {
             core_1.info(`Tag ${tag} already exists`);
         }
         else {
             core_1.info(`Creating tag ${tag}`);
             core_1.setOutput('tag', tag);
-            await git_1.createTag(tag);
+            await git_1.createTag(tag, annotation);
         }
     }
 }
