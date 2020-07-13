@@ -1783,12 +1783,37 @@ exports.checkout = checkout;
 async function createTag(name, annotation) {
     let tagArgs = ['tag', name];
     if (annotation.length) {
+        // If we're pushing an annotation, `user.name` and `user.email` must be configured.
+        await ensureUserIsConfigured();
         tagArgs.push('-m', annotation);
     }
     await execa_1.default('git', tagArgs);
     await execa_1.default('git', ['push', '--tags']);
 }
 exports.createTag = createTag;
+async function ensureUserIsConfigured() {
+    if (!(await hasConfig('user.name'))) {
+        await setConfig('user.name', 'github-actions');
+    }
+    if (!(await hasConfig('user.email'))) {
+        await setConfig('user.email', 'github-actions@user.noreply.github.com');
+    }
+}
+exports.ensureUserIsConfigured = ensureUserIsConfigured;
+async function hasConfig(name) {
+    try {
+        await execa_1.default('git', ['config', name]);
+        return true;
+    }
+    catch (_a) {
+        return false;
+    }
+}
+exports.hasConfig = hasConfig;
+async function setConfig(name, value) {
+    await execa_1.default('git', ['config', name, value]);
+}
+exports.setConfig = setConfig;
 
 
 /***/ }),
