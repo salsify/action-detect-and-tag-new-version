@@ -28,9 +28,35 @@ export async function checkout(ref: string): Promise<void> {
 export async function createTag(name: string, annotation: string): Promise<void> {
   let tagArgs = ['tag', name];
   if (annotation.length) {
+    // If we're pushing an annotation, `user.name` and `user.email` must be configured.
+    await ensureUserIsConfigured();
+
     tagArgs.push('-m', annotation);
   }
 
   await execa('git', tagArgs);
   await execa('git', ['push', '--tags']);
+}
+
+export async function ensureUserIsConfigured(): Promise<void> {
+  if (!(await hasConfig('user.name'))) {
+    await setConfig('user.name', 'github-actions');
+  }
+
+  if (!(await hasConfig('user.email'))) {
+    await setConfig('user.email', 'github-actions@user.noreply.github.com');
+  }
+}
+
+export async function hasConfig(name: string): Promise<boolean> {
+  try {
+    await execa('git', ['config', name]);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function setConfig(name: string, value: string): Promise<void> {
+  await execa('git', ['config', name, value]);
 }
