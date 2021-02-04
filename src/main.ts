@@ -1,32 +1,33 @@
 import { getInput, setFailed, setOutput, info } from '@actions/core';
-import { determineVersion } from './determine-version';
+import { determineContent } from './determine-content';
 import { validateHistoryDepth, checkout, createTag, refExists } from './git';
 import { getEnv } from './utils';
 
 const VERSION_PLACEHOLDER = /{VERSION}/g;
+const DATETIME_EPOCH_PLACEHOLDER = /{DATETIME_EPOCH}/g;
 
 async function run(): Promise<void> {
   await validateHistoryDepth();
   await checkout('HEAD~1');
 
-  let previousVersion = await determineVersion();
+  let previousContent = await determineContent();
 
-  info(`Previous version: ${previousVersion}`);
-  setOutput('previous-version', previousVersion);
+  info(`Previous Content: ${previousContent}`);
+  setOutput('previous-content', previousContent);
 
   await checkout(getEnv('GITHUB_REF'));
 
-  let currentVersion = await determineVersion();
+  let currentContent = await determineContent();
 
-  info(`Current version: ${currentVersion}`);
-  setOutput('current-version', currentVersion);
+  info(`Current Content: ${currentContent}`);
+  setOutput('current-content', currentContent);
 
-  if (currentVersion !== previousVersion && getInput('create-tag') !== 'false') {
-    let tagTemplate = getInput('tag-template') || 'v{VERSION}';
-    let tag = tagTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
+  if (currentContent !== previousContent && getInput('create-tag') !== 'false') {
+    let tagTemplate = getInput('tag-template');
+    let tag = tagTemplate.replace(DATETIME_EPOCH_PLACEHOLDER, Date.now());
 
     let annotationTemplate = getInput('tag-annotation-template') || 'Released version {VERSION}';
-    let annotation = annotationTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
+    let annotation = annotationTemplate.replace(DATETIME_EPOCH_PLACEHOLDER, Date.now());
 
     if (await refExists(tag)) {
       info(`Tag ${tag} already exists`);
