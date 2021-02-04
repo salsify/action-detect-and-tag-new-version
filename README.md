@@ -19,9 +19,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - uses: salsify/action-detect-and-tag-new-version@v2
+      - uses: shubhpy/action-detect-and-tag-new-version
         with:
-          version-command: |
+          tag-template: cloud_function_tag_name_{DATETIME_EPOCH}
+          diff-on-content: |
             cat current-version.txt
 ```
 
