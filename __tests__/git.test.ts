@@ -30,7 +30,7 @@ describe('refExists', () => {
   test('returns true for existing refs', async () => {
     await execa('git', ['tag', 'a-tag']);
     expect(await git.refExists('HEAD')).toBe(true);
-    expect(await git.refExists('master')).toBe(true);
+    expect(await git.refExists('main')).toBe(true);
     expect(await git.refExists('a-tag')).toBe(true);
   });
 

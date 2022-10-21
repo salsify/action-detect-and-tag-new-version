@@ -31,7 +31,7 @@ outputs:
   tag:
     description: if a new tag is created, this output will contain its name
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   icon: tag
