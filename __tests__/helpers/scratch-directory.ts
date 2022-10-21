@@ -13,6 +13,6 @@ export function runTestsInScratchDirectory(): void {
 
   afterEach(async () => {
     process.chdir(cwd);
-    fs.rmdirSync(testDir, { recursive: true });
+    fs.rmSync(testDir, { recursive: true, force: true });
   });
 }

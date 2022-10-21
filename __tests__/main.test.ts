@@ -25,7 +25,7 @@ describe('with a changed version', () => {
   test('creates a new tag', async () => {
     let result = await execa.node(`${__dirname}/../lib/main.js`, {
       env: {
-        GITHUB_REF: 'master',
+        GITHUB_REF: 'main',
       },
     });
 
@@ -46,7 +46,7 @@ describe('with a changed version', () => {
   test('skips tag creation when configured to', async () => {
     let result = await execa.node(`${__dirname}/../lib/main.js`, {
       env: {
-        GITHUB_REF: 'master',
+        GITHUB_REF: 'main',
         'INPUT_CREATE-TAG': 'false',
       },
     });
@@ -67,7 +67,7 @@ describe('with no version change', () => {
 
     let result = await execa.node(`${__dirname}/../lib/main.js`, {
       env: {
-        GITHUB_REF: 'master',
+        GITHUB_REF: 'main',
       },
     });
 
