@@ -5,12 +5,20 @@ import { initRepository, addAndTrackRemote } from './helpers/git';
 
 runTestsInScratchDirectory();
 
+let originalOutput = process.env.GITHUB_OUTPUT;
+
 beforeEach(async () => {
   await initRepository(process.cwd());
 
   fs.writeFileSync('package.json', JSON.stringify({ version: '1.2.3' }));
   await execa('git', ['add', 'package.json']);
   await execa('git', ['commit', '-m', 'Add package.json']);
+
+  delete process.env.GITHUB_OUTPUT;
+});
+
+afterEach(() => {
+  process.env.GITHUB_OUTPUT = originalOutput;
 });
 
 describe('with a changed version', () => {
@@ -33,14 +41,17 @@ describe('with a changed version', () => {
     await execa('git', ['rev-parse', 'v2.0.0']);
     await execa('git', ['rev-parse', 'v2.0.0'], { cwd: 'upstream' });
 
-    expect(result.stdout.trim().split('\n')).toEqual([
-      'Previous version: 1.2.3',
-      '::set-output name=previous-version::1.2.3',
-      'Current version: 2.0.0',
-      '::set-output name=current-version::2.0.0',
-      'Creating tag v2.0.0',
-      '::set-output name=tag::v2.0.0',
-    ]);
+    expect(result.stdout).toMatchInlineSnapshot(`
+      "Previous version: 1.2.3
+
+      ::set-output name=previous-version::1.2.3
+      Current version: 2.0.0
+
+      ::set-output name=current-version::2.0.0
+      Creating tag v2.0.0
+
+      ::set-output name=tag::v2.0.0"
+    `);
   });
 
   test('skips tag creation when configured to', async () => {
@@ -51,12 +62,14 @@ describe('with a changed version', () => {
       },
     });
 
-    expect(result.stdout.trim().split('\n')).toEqual([
-      'Previous version: 1.2.3',
-      '::set-output name=previous-version::1.2.3',
-      'Current version: 2.0.0',
-      '::set-output name=current-version::2.0.0',
-    ]);
+    expect(result.stdout).toMatchInlineSnapshot(`
+      "Previous version: 1.2.3
+
+      ::set-output name=previous-version::1.2.3
+      Current version: 2.0.0
+
+      ::set-output name=current-version::2.0.0"
+    `);
   });
 });
 
@@ -71,11 +84,13 @@ describe('with no version change', () => {
       },
     });
 
-    expect(result.stdout.trim().split('\n')).toEqual([
-      'Previous version: 1.2.3',
-      '::set-output name=previous-version::1.2.3',
-      'Current version: 1.2.3',
-      '::set-output name=current-version::1.2.3',
-    ]);
+    expect(result.stdout).toMatchInlineSnapshot(`
+      "Previous version: 1.2.3
+
+      ::set-output name=previous-version::1.2.3
+      Current version: 1.2.3
+
+      ::set-output name=current-version::1.2.3"
+    `);
   });
 });
