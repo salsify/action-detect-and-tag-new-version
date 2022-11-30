@@ -5,12 +5,20 @@ import { initRepository, addAndTrackRemote } from './helpers/git';
 
 runTestsInScratchDirectory();
 
+let originalOutput = process.env.GITHUB_OUTPUT;
+
 beforeEach(async () => {
   await initRepository(process.cwd());
 
   fs.writeFileSync('package.json', JSON.stringify({ version: '1.2.3' }));
   await execa('git', ['add', 'package.json']);
   await execa('git', ['commit', '-m', 'Add package.json']);
+
+  delete process.env.GITHUB_OUTPUT;
+});
+
+afterEach(() => {
+  process.env.GITHUB_OUTPUT = originalOutput;
 });
 
 describe('with a changed version', () => {
