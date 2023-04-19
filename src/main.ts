@@ -14,7 +14,14 @@ async function run(): Promise<void> {
   info(`Previous version: ${previousVersion}`);
   setOutput('previous-version', previousVersion);
 
-  await checkout(getEnv('GITHUB_REF'));
+  let checkoutRef;
+  try {
+    checkoutRef = getEnv('GITHUB_HEAD_REF');
+  catch {
+    checkoutRef = getEnv('GITHUB_REF');
+  }
+
+  await checkout(checkoutRef);
 
   let currentVersion = await determineVersion();
 
