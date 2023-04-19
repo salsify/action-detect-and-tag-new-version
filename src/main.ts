@@ -17,6 +17,7 @@ async function run(): Promise<void> {
   let checkoutRef;
   try {
     checkoutRef = getEnv('GITHUB_HEAD_REF');
+  }
   catch {
     checkoutRef = getEnv('GITHUB_REF');
   }
