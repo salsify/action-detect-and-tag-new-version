@@ -25,7 +25,7 @@ async function run(): Promise<void> {
     let tagTemplate = getInput('tag-template') || 'v{VERSION}';
     let tag = tagTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
 
-    let annotationTemplate = getInput('tag-annotation-template') || 'Released version {VERSION}';
+    let annotationTemplate = getInput('tag-annotation-template') || '';
     let annotation = annotationTemplate.replace(VERSION_PLACEHOLDER, currentVersion);
 
     if (await refExists(tag)) {
