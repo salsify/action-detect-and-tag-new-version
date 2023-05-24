@@ -53,3 +53,22 @@ If no `version-command` input is provided, this action will attempt to do someth
  - If it finds single `*.gemspec` file, it will consider the version defined there to be the repository version.
 
 The logic for this detection and the corresponding version commands used can be found in [`determine-version.ts`](src/determine-version.ts).
+
+## Developing
+
+To work on this repo do the following after cloning:
+
+```bash
+# Use exact version of Node.js as detailed in .nvmrc file
+nvm install
+
+# If you don't have Yarn v1 installed globally then use this to install
+# dependencies in the repo as it's used for package management.
+npm install --no-save yarn@1
+
+# Install dependencies with yarn
+npx yarn install
+
+# Run end to end build and validation
+npm run all
+```
