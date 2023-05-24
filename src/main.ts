@@ -1,7 +1,7 @@
 import { getInput, setFailed, setOutput, info } from '@actions/core';
 import { determineVersion } from './determine-version';
 import { validateHistoryDepth, checkout, createTag, refExists } from './git';
-import { getEnv } from './utils';
+import { getEnv, getEnvOrNull } from './utils';
 
 const VERSION_PLACEHOLDER = /{VERSION}/g;
 
@@ -14,12 +14,7 @@ async function run(): Promise<void> {
   info(`Previous version: ${previousVersion}`);
   setOutput('previous-version', previousVersion);
 
-  let checkoutRef;
-  try {
-    checkoutRef = getEnv('GITHUB_HEAD_REF') || getEnv('GITHUB_REF');
-  } catch {
-    checkoutRef = getEnv('GITHUB_REF');
-  }
+  const checkoutRef = getEnvOrNull('GITHUB_HEAD_REF') || getEnv('GITHUB_REF');
 
   await checkout(checkoutRef);
 
