@@ -9,7 +9,7 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
-    "package": "ncc build",
+    "package": "NODE_OPTIONS=--openssl-legacy-provider ncc build",
     "test": "jest",
     "all": "yarn build && yarn format && yarn lint && yarn package && yarn test"
   },
